@@ -1,0 +1,12 @@
+# Dependency directories
+node_modules/
+
+# Sticker files
+StickerSets/
+
+# dotenv environment variables file
+.env
+
+# Vim Swp
+*.swp
+
