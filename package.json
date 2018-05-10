@@ -1,0 +1,33 @@
+{
+  "name": "stickerker",
+  "version": "1.0.0",
+  "description": "A bot to convert sticker sets from Line to Telegram.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "SticKerKer"
+  },
+  "keywords": [
+    "telegram",
+    "line",
+    "sticker",
+    "convert",
+    "move",
+    "download",
+    "resize"
+  ],
+  "author": "KylinWu",
+  "license": "MIT",
+  "dependencies": {
+    "decompress": "^4.2.0",
+    "dotenv": "^5.0.1",
+    "node-telegram-bot-api": "^0.30.0",
+    "prompt": "^1.0.0",
+    "request": "^2.85.0",
+    "sharp": "^0.20.2",
+    "telegram-mtproto": "^2.2.2"
+  }
+}
