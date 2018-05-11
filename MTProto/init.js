@@ -1,5 +1,5 @@
 const MTProto = require("telegram-mtproto").MTProto;
-require('dotenv').config({path: '../.env'});
+require('dotenv').config({path: __dirname + '/../.env'});
 
 const api = {
       invokeWithLayer: 0xda9b0d0d,
@@ -10,7 +10,7 @@ const api = {
       lang_code      : 'en'
 }
 
-const server = { webogram: true, dev: false }
+const server = { webogram: false, dev: true }
 
 const telegram = MTProto({ api, server })
 

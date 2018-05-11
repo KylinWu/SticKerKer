@@ -1,5 +1,5 @@
 const telegram = require('./init')
-require('dotenv').config({path: '../.env'});
+require('dotenv').config({path: __dirname + '/../.env'});
 
 const { inputField } = require('./fixtures')
 
