@@ -32,7 +32,6 @@ async function resizeSticker() {
             .toBuffer((err, buffer) => {
                 fs.writeFile(stickerPath, buffer, (err) => {
                     if (err) throw err;
-                    console.log('Resize Sticker Done!');
                 });
             })
         });
