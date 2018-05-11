@@ -24,6 +24,8 @@
   "dependencies": {
     "decompress": "^4.2.0",
     "dotenv": "^5.0.1",
+    "mz": "^2.7.0",
+    "node-emoji": "^1.8.1",
     "node-telegram-bot-api": "^0.30.0",
     "prompt": "^1.0.0",
     "request": "^2.85.0",
