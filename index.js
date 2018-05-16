@@ -10,7 +10,7 @@ const fs = require('mz/fs');
 const path = require('path');
 const emoji = require('node-emoji');
 
-const userId = process.env.TELEGRAM_USERID;
+const userChatId = process.env.TELEGRAM_USER_CHAT_ID;
 
 const Stage = {
     "Idle": 0,
@@ -31,14 +31,14 @@ async function run() {
     const peer = await mtproto.getForeignPeer('@Stickers');
     bot.onText(/\/start/, async (msg, match) => {
         const chatId = msg.chat.id;
-        if (chatId == userId) {
+        if (chatId == userChatId) {
            await bot.sendMessage(chatId, helpMsg);
         }
     });
 
     bot.onText(/\/help/, async (msg, match) => {
         const chatId = msg.chat.id;
-        if (chatId == userId) {
+        if (chatId == userChatId) {
             await bot.sendMessage(chatId, helpMsg);
         }
     });
@@ -48,11 +48,11 @@ async function run() {
         const chatId = msg.chat.id;
         const stickerID = match[1];
 
-        if (chatId == userId && currentStage == Stage.Idle) {
+        if (chatId == userChatId && currentStage == Stage.Idle) {
             await bot.sendMessage(chatId, 'Start downloading Line sticker pack ' + stickerID);
             currentStage = Stage.Downloading;
             await api.download(stickerID);
-            await bot.sendMessage(chatId, 'Please give a name for your pack.');
+            bot.sendMessage(chatId, 'Please give a name for your pack.');
             currentStage = Stage.WaitPackName;
         }
     });
@@ -60,7 +60,7 @@ async function run() {
     bot.onText(/\/cancel/, async (msg, match) => {
         const chatId = msg.chat.id;
 
-        if (chatId == userId) {
+        if (chatId == userChatId) {
             if (currentStage == Stage.Idle 
                 || currentStage == Stage.WaitPackName 
                 || currentStage == Stage.WaitShortName) {
@@ -77,7 +77,7 @@ async function run() {
         const chatId = msg.chat.id;
         const input = match[0];
 
-        if (chatId == userId) {
+        if (chatId == userChatId) {
             switch(currentStage) {
                 case Stage.Downloading:
                     bot.sendMessage(chatId, 'Wait a second, still downloading Line sticker pack.');
@@ -91,12 +91,28 @@ async function run() {
                     await fs.readdir('./StickerSets/pack')
                     .then(async (stickers) => {
                         const total = stickers.length;
+                        var fileList = new Array();
                         let count = 1;
                         for (let sticker of stickers) {
                             const stickerPath = path.resolve('./StickerSets/pack/', path.basename(sticker));
-                            await mtproto.sendMedia(peer, stickerPath);
-                            await mtproto.sendMsg(peer, emoji.emojify(':small_blue_diamond:'));
+                            console.log('Sticker file part uploading... ' + count++ + '/' + total);
+                            const filePartData = await mtproto.sendFilePart(peer, stickerPath);
+                            fileList.push(filePartData);
+                        }
+                        count = 1;
+                        const regex = /Thanks! Now send me an emoji that corresponds to your first sticker\./g;
+                        let match, lastMsg;
+                        for (let list of fileList) {
+                            console.log('Sending sitcker... ' + count + '/' + total);
                             await bot.sendMessage(chatId, 'Uploading...(' + count++ + '/' + total + ')');
+                            mtproto.sendMedia(peer, list.file, list.fileId);
+                            do {
+                                console.log('Waiting lastMsg');
+                                lastMsg = await mtproto.getLastMsg(peer);
+                                match = regex.test(lastMsg);
+                                console.log((match)?'Response Checked.':'Not yet response.');
+                            } while (match !== true);
+                            await mtproto.sendMsg(peer, emoji.emojify(':small_blue_diamond:'));
                         }
                         await bot.sendMessage(chatId, 'Upload done!');
                         await mtproto.sendMsg(peer, '/publish');
@@ -109,7 +125,7 @@ async function run() {
                     bot.sendMessage(chatId, 'Wait a minute, we are still uploading sticker.');
                     break;
                 case Stage.WaitShortName:
-                    await mtproto.sendMsg(peer, input);
+                    mtproto.sendMsg(peer, input);
                     bot.sendMessage(chatId, 'Your pack should be published at https://t.me/addstickers/' + input);
                     currentStage = Stage.Idle;
                     break;
