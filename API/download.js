@@ -22,6 +22,7 @@ async function unzipPack() {
     });
 }
 
+//FIXME: keep ratio
 async function resizeSticker() {
     return await fs.readdir('./StickerSets/pack', (err, stickers) => {
         if (err) throw err;
