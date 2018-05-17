@@ -22,7 +22,6 @@ async function unzipPack() {
     });
 }
 
-//FIXME: keep ratio
 async function resizeSticker() {
     return await fs.readdir('./StickerSets/pack', (err, stickers) => {
         if (err) throw err;
@@ -30,6 +29,9 @@ async function resizeSticker() {
             const stickerPath = path.resolve('./StickerSets/pack/', path.basename(sticker));
             sharp(stickerPath)
             .resize(512, 512)
+            .background({r: 255, g: 255, b: 255, alpha: 0})
+            .embed()
+            .toFormat('png')
             .toBuffer((err, buffer) => {
                 fs.writeFile(stickerPath, buffer, (err) => {
                     if (err) throw err;
