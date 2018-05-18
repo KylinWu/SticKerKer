@@ -10,3 +10,5 @@ StickerSets/
 # Vim Swp
 *.swp
 
+# Session Storage
+storage.json

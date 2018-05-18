@@ -1,5 +1,8 @@
+const { Storage } = require('mtproto-storage-fs');
 const MTProto = require("telegram-mtproto").MTProto;
 require('dotenv').config({path: __dirname + '/../.env'});
+
+storagePath = ('./storage.json');
 
 const api = {
       invokeWithLayer: 0xda9b0d0d,
@@ -10,8 +13,12 @@ const api = {
       lang_code      : 'en'
 }
 
+const app = {
+    storage: new Storage(storagePath)
+}
+
 const server = { webogram: false, dev: true }
 
-const telegram = MTProto({ api, server })
+const telegram = MTProto({ api, server, app })
 
 module.exports = telegram
