@@ -27,7 +27,8 @@ const helpMsg =
     `/cancel - cancel the current operation`;
 
 async function run() {
-    await mtproto.login();
+    //await mtproto.login();
+    await mtproto.auth();
     const peer = await mtproto.getForeignPeer('@Stickers');
     bot.onText(/\/start/, async (msg, match) => {
         const chatId = msg.chat.id;
