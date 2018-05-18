@@ -125,7 +125,15 @@ async function run() {
                     bot.sendMessage(chatId, 'Wait a minute, we are still uploading sticker.');
                     break;
                 case Stage.WaitShortName:
+                    const regex = /Sorry, this short name is already taken\./g;
                     mtproto.sendMsg(peer, input);
+                    do {
+                        lastMsg = await mtproto.getLastMsg(peer);
+                    } while (!lastMsg)
+                    if (regex.test(lastMsg)) {
+                        bot.sendMessage(chatId, 'Sorry, this short name is already taken. Give me another one.');
+                        break;
+                    }
                     bot.sendMessage(chatId, 'Your pack should be published at https://t.me/addstickers/' + input);
                     currentStage = Stage.Idle;
                     break;
