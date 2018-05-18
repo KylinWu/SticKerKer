@@ -1,7 +1,7 @@
 # SticKerKer
 A bot to convert Line stickers to Telegram.
 
-# Requirement
+## Requirement
 1. node.js
   - version >= 9.11.1
 
@@ -17,7 +17,7 @@ A bot to convert Line stickers to Telegram.
 
 
 
-# Installation
+## Installation
 ```
 git clone https://github.com/KylinWu/SticKerKer.git
 cd SticKerKer
@@ -26,7 +26,16 @@ cp .env.example .env
 ```
 Fill in the `api_id`, `api_hash`, `Token` and `Chat Id` in the `.env` file.
 
-# Usage
+## Usage
 ```
 node index.js
 ```
+
+## Knowing issues
+
+ - For now, the telegram-mtproto 3.1.3 is only works for `dev` data center (hereinafter “DC”). If you want to connect to `prod` DC, you could install version 2.2.8 but this version is very unstable and highly possible to get a temporary ban (a few hours).
+
+    ```
+    npm install --save telegram-mtproto@2.2.8
+    ```
+
