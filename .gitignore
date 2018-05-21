@@ -12,3 +12,9 @@ StickerSets/
 
 # Session Storage
 storage.json
+
+# TDLib personal data
+TDL/_td_*
+
+# TDLib
+TDL/libtdjson.so
