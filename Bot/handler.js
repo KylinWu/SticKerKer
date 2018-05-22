@@ -70,7 +70,7 @@ const newpack = async (bot, chatId, stickerID) => {
 const quickpack = async (bot, chatId, stickerID, packName) => {
     if (currentStage == Stage.Idle) {
         await api.clean('./StickerSets/pack');
-        await bot.sendMessage(chatId, 'Start downloading Line sticker pack ' + packName);
+        await bot.sendMessage(chatId, 'Start downloading Line sticker pack [' + packName + ']');
         currentStage = Stage.Downloading;
         await api.download(stickerID);
         currentStage = Stage.WaitPackName;
@@ -79,6 +79,10 @@ const quickpack = async (bot, chatId, stickerID, packName) => {
 }
 
 const input = async (bot, chatId, input) => {
+    const takenRegex = /Sorry, this short name is already taken\./g;
+    const unacceptRegex = /Sorry, this short name is unacceptable\.|Sorry, this title is unacceptable\./g;
+    let match, lastMsg;
+
     switch (currentStage) {
         case Stage.Downloading:
             bot.sendMessage(chatId, 'Wait a second, still downloading Line sticker pack.');
@@ -88,6 +92,14 @@ const input = async (bot, chatId, input) => {
             await tdl.sendMsg(stickersChatId, '/cancel');
             await tdl.sendMsg(stickersChatId, '/newpack');
             await tdl.sendMsg(stickersChatId, input);
+            do {
+                await delay(800);
+                lastMsg = await tdl.getLastMsg(stickersChatId);
+            } while (!lastMsg)
+            if (await unacceptRegex.test(lastMsg)) {
+                bot.sendMessage(chatId, 'Sorry, this title is unacceptable. Give me another one.');
+                break;
+            }
             await bot.sendMessage(chatId, 'Alright! Now we are uploading sticker, Please wait a minute.');
             currentStage = Stage.Uploading;
 
@@ -95,7 +107,6 @@ const input = async (bot, chatId, input) => {
             .then(async (stickers) => {
                 const total = (stickers.length > 120) ? 120 : stickers.length;
                 let count = 1;
-                let match, lastMsg;
                 const regex = /Thanks! Now send me an emoji that corresponds to your first sticker\./g;
                 for (let sticker of stickers) {
                     const stickerPath = path.resolve('./StickerSets/pack/', path.basename(sticker));
@@ -122,14 +133,17 @@ const input = async (bot, chatId, input) => {
             bot.sendMessage(chatId, 'Wait a minute, we are still uploading sticker.');
             break;
         case Stage.WaitShortName:
-            const regex = /Sorry, this short name is already taken\./g;
             tdl.sendMsg(stickersChatId, input);
             do {
                 await delay(800);
                 lastMsg = await tdl.getLastMsg(stickersChatId);
             } while (!lastMsg)
-            if (await regex.test(lastMsg)) {
+            if (await takenRegex.test(lastMsg)) {
                 bot.sendMessage(chatId, 'Sorry, this short name is already taken. Give me another one.');
+                break;
+            }
+            else if (await unacceptRegex.test(lastMsg)) {
+                bot.sendMessage(chatId, 'Sorry, this short name is unacceptable. Give me another one.');
                 break;
             }
             bot.sendMessage(chatId, 'Your pack should be published at https://t.me/addstickers/' + input);
