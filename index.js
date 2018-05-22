@@ -60,7 +60,7 @@ const run = async () => {
             }
         }
         else {
-            bot.sendMessage(bot, chatId, 'You are not my lord.');
+            bot.sendMessage(chatId, 'You are not my lord.');
         }
     });
     
