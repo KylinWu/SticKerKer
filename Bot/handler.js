@@ -58,11 +58,22 @@ const cancel = async (bot, chatId) => {
 const newpack = async (bot, chatId, stickerID) => {
     if (currentStage == Stage.Idle) {
         await api.clean('./StickerSets/pack');
-        await bot.sendMessage(chatId, 'Start downloading Line sticker pack ' + stickerID);
+        await bot.sendMessage(chatId, 'Start downloading Line sticker pack [' + stickerID + ']');
         currentStage = Stage.Downloading;
         await api.download(stickerID);
         bot.sendMessage(chatId, 'Please give a name for your pack.');
         currentStage = Stage.WaitPackName;
+    }
+}
+
+const quickpack = async (bot, chatId, stickerID, packName) => {
+    if (currentStage == Stage.Idle) {
+        await api.clean('./StickerSets/pack');
+        await bot.sendMessage(chatId, 'Start downloading Line sticker pack ' + packName);
+        currentStage = Stage.Downloading;
+        await api.download(stickerID);
+        currentStage = Stage.WaitPackName;
+        await input(bot, chatId, packName);
     }
 }
 
@@ -128,4 +139,4 @@ const input = async (bot, chatId, input) => {
     }
 }
 
-module.exports = { init, help, cancel, newpack, input };
+module.exports = { init, help, cancel, newpack, quickpack, input };

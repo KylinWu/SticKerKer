@@ -7,10 +7,12 @@ const handler = new Handler();
 const userChatId = process.env.TELEGRAM_USER_CHAT_ID;
 
 const parse = async msg => {
+    console.log(msg);
     var match;
     const helpReg = /\/start|\/help/;
     const cancelReg = /\/cancel/;
-    const newpackReg = /\/newpack ([0-9]{7})/;
+    const newpackReg = /\/newpack ([0-9]{1,7})/;
+    const quickpackReg = /\[(.+)\]\nhttps:\/\/line.me\/S\/sticker\/([0-9]{1,7})/;
     const inputReg = /^[a-zA-Z0-9]+/;
     if (await helpReg.test(msg)) {
         return { 
@@ -26,8 +28,16 @@ const parse = async msg => {
         match = await newpackReg.exec(msg);
         return {
             cmd: 'newpack',
-            stickerID: match[1]
+            stickerID: Number(match[1])
         };
+    }
+    else if (await quickpackReg.test(msg)) {
+        match = await quickpackReg.exec(msg);
+        return {
+            cmd: 'quickpack',
+            packName: match[1].toString(),
+            stickerID: Number(match[2])
+        }
     }
     else if (await inputReg.test(msg)) {
         return {
@@ -38,10 +48,9 @@ const parse = async msg => {
 
 const run = async () => {
     await handler.init();
-    bot.onText(/.+/, async(msg, match) => {
+    bot.onText(/[^]+/, async(msg, match) => {
         const chatId = msg.chat.id;
         const input = match[0];
-     
         if (chatId == userChatId) {
             var result = await parse(input);
             switch (result.cmd) {
@@ -53,6 +62,9 @@ const run = async () => {
                     break;
                 case 'newpack':
                     handler.newpack(bot, chatId, result.stickerID);
+                    break;
+                case 'quickpack':
+                    handler.quickpack(bot, chatId, result.stickerID, result.packName);
                     break;
                 case 'input':
                     handler.input(bot, chatId, input);
