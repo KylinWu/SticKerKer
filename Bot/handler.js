@@ -81,7 +81,7 @@ const input = async (bot, chatId, input) => {
 
             await fs.readdir('./StickerSets/pack')
             .then(async (stickers) => {
-                const total = stickers.length;
+                const total = (stickers.length > 120) ? 120 : stickers.length;
                 let count = 1;
                 let match, lastMsg;
                 const regex = /Thanks! Now send me an emoji that corresponds to your first sticker\./g;
@@ -97,6 +97,7 @@ const input = async (bot, chatId, input) => {
                     } while (match !== true);
                     await tdl.sendMsg(stickersChatId, emoji.emojify(':small_blue_diamond:'));
                     await bot.sendMessage(chatId, 'Uploading...(' + count++ + '/' + total + ')');
+                    if (count > total) break;
                 }
                 await bot.sendMessage(chatId, 'Upload done!');
                 await tdl.sendMsg(stickersChatId, '/publish');
