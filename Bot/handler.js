@@ -48,6 +48,7 @@ const cancel = async (bot, chatId) => {
         || currentStage == Stage.WaitPackName 
         || currentStage == Stage.WaitShortName) {
             currentStage = Stage.Idle;
+            await tdl.sendMsg(stickersChatId, '/cancel');
             await bot.sendMessage(chatId, 'The command newpack was cancelled.');
     }
     else {
