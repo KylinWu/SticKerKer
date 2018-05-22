@@ -57,6 +57,7 @@ const cancel = async (bot, chatId) => {
 
 const newpack = async (bot, chatId, stickerID) => {
     if (currentStage == Stage.Idle) {
+        await api.clean('./StickerSets/pack');
         await bot.sendMessage(chatId, 'Start downloading Line sticker pack ' + stickerID);
         currentStage = Stage.Downloading;
         await api.download(stickerID);
