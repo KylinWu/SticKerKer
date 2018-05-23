@@ -49,6 +49,7 @@ const cancel = async (bot, chatId) => {
         || currentStage == Stage.WaitShortName) {
             currentStage = Stage.Idle;
             await tdl.sendMsg(stickersChatId, '/cancel');
+            await tdl.unmuteChat(stickersChatId);
             await bot.sendMessage(chatId, 'The command newpack was cancelled.');
     }
     else {
@@ -89,6 +90,7 @@ const input = async (bot, chatId, input) => {
             break;
         case Stage.WaitPackName:
             console.log(stickersChatId);
+            await tdl.muteChat(stickersChatId);
             await tdl.sendMsg(stickersChatId, '/cancel');
             await tdl.sendMsg(stickersChatId, '/newpack');
             await tdl.sendMsg(stickersChatId, input);
@@ -159,6 +161,7 @@ const input = async (bot, chatId, input) => {
                 break;
             }
             bot.sendMessage(chatId, 'Your pack should be published at https://t.me/addstickers/' + input);
+            await tdl.unmuteChat(stickersChatId);
             currentStage = Stage.Idle;
             break;
         case Stage.Idle:

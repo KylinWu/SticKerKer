@@ -3,6 +3,30 @@ const fs = require('mz/fs');
 const crypto = require('crypto');
 const path = require('path');
 
+const setNotificationSettings = async (chat_id, mute_for) => {
+    await telegram.invoke({
+        _: 'setNotificationSettings',
+        scope: {
+            _: 'notificationSettingsScopeChat',
+            chat_id: chat_id
+        },
+        notification_settings: {
+            _: 'notificationSettings',
+            mute_for: mute_for,
+            sound: 'default',
+            show_preview: true
+        }
+    })
+}
+
+const muteChat = async chat_id => {
+    return await setNotificationSettings(chat_id, 300);
+}
+
+const unmuteChat = async chat_id => {
+    return await setNotificationSettings(chat_id, 0);
+}
+
 const searchPublicChat = async username => {
     return await telegram.invoke({
         _: 'searchPublicChat',
@@ -84,4 +108,4 @@ const sendMsg = async (chat_id, message) => {
     .catch(console.log);
 }
 
-module.exports = { sendMsg, getChatId, sendFile, getLastMsg  };
+module.exports = { sendMsg, getChatId, sendFile, getLastMsg, muteChat, unmuteChat };
