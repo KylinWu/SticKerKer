@@ -131,7 +131,7 @@ const input = async (bot, chatId, input) => {
                     });
                     if (count > total) break;
                 }
-                await bot.editMessageText('Uploading DONE!(' + count++ + '/' + total + ')', {
+                await bot.editMessageText('Uploading DONE!', {
                     chat_id: chatId,
                     message_id: progressMsgId
                 });
