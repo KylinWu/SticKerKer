@@ -13,7 +13,6 @@ const parse = async msg => {
     const cancelReg = /\/cancel/;
     const newpackReg = /\/newpack ([0-9]{1,7})/;
     const quickpackReg = /\[(.+)\]\nhttps:\/\/line.me\/S\/sticker\/([0-9]{1,7})/;
-    const inputReg = /^[a-zA-Z0-9]+/;
     if (await helpReg.test(msg)) {
         return { 
             cmd:'help' 
@@ -39,7 +38,7 @@ const parse = async msg => {
             stickerID: Number(match[2])
         }
     }
-    else if (await inputReg.test(msg)) {
+    else {
         return {
             cmd: 'input'
         }
