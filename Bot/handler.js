@@ -108,6 +108,12 @@ const input = async (bot, chatId, input) => {
                 const total = (stickers.length > 120) ? 120 : stickers.length;
                 let count = 1;
                 const regex = /Thanks! Now send me an emoji that corresponds to your first sticker\./g;
+                
+                const progressMsgId = await bot.sendMessage(chatId, 'Uploading...')
+                    .then(result => {
+                        return result.message_id
+                    });
+
                 for (let sticker of stickers) {
                     const stickerPath = path.resolve('./StickerSets/pack/', path.basename(sticker));
                     console.log('Sending stickers... ' + count + '/' + total);
@@ -119,10 +125,16 @@ const input = async (bot, chatId, input) => {
                         console.log((match)?'Response Checked.':'Not yet response.');
                     } while (match !== true);
                     await tdl.sendMsg(stickersChatId, emoji.emojify(':small_blue_diamond:'));
-                    await bot.sendMessage(chatId, 'Uploading...(' + count++ + '/' + total + ')');
+                    await bot.editMessageText('Uploading...(' + count++ + '/' + total + ')', {
+                        chat_id: chatId,
+                        message_id: progressMsgId
+                    });
                     if (count > total) break;
                 }
-                await bot.sendMessage(chatId, 'Upload done!');
+                await bot.editMessageText('Uploading DONE!(' + count++ + '/' + total + ')', {
+                    chat_id: chatId,
+                    message_id: progressMsgId
+                });
                 await tdl.sendMsg(stickersChatId, '/publish');
                 await bot.sendMessage(chatId, 'Please provide a short name for your sticker pack.');
                 currentStage = Stage.WaitShortName;
