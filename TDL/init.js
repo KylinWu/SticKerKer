@@ -4,15 +4,12 @@ require('dotenv').config({path: __dirname + '/../.env'});
 const config = {
     id  : process.env.MTPROTO_API_ID,
     hash: process.env.MTPROTO_API_HASH,
-    phone: process.env.PHONE
 }
 
 const option = {
     apiId: Number(config.id),
     apiHash: config.hash.toString(),
-    loginDetails: {
-        phoneNumber: config.phone.toString()
-    },
+    verbosityLevel: 2,
     dev: false,
     binaryPath:  __dirname + '/libtdjson',
     databaseDirectory:  __dirname + '/_td_database',
