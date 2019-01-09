@@ -5,11 +5,8 @@ const path = require('path');
 
 const setNotificationSettings = async (chat_id, mute_for) => {
     await telegram.invoke({
-        _: 'setNotificationSettings',
-        scope: {
-            _: 'notificationSettingsScopeChat',
-            chat_id: chat_id
-        },
+        _: 'setChatNotificationSettings',
+        chat_id: chat_id,
         notification_settings: {
             _: 'notificationSettings',
             mute_for: mute_for,
