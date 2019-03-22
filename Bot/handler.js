@@ -138,6 +138,7 @@ const input = async (bot, chatId, input) => {
                     message_id: progressMsgId
                 });
                 await tdl.sendMsg(stickersChatId, '/publish');
+                await tdl.sendMsg(stickersChatId, '/skip');
                 await bot.sendMessage(chatId, 'Please provide a short name for your sticker pack.');
                 currentStage = Stage.WaitShortName;
             })
