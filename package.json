@@ -23,12 +23,12 @@
   "license": "MIT",
   "dependencies": {
     "decompress": "^4.2.0",
-    "dotenv": "^5.0.1",
+    "dotenv": "^7.0.0",
     "mz": "^2.7.0",
-    "node-emoji": "^1.8.1",
+    "node-emoji": "^1.10.0",
     "node-telegram-bot-api": "^0.30.0",
     "request": "^2.88.0",
-    "sharp": "^0.20.8",
+    "sharp": "^0.22.0",
     "tdl": "^5.2.0"
   }
 }
